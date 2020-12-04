@@ -26,7 +26,7 @@ class TestComplexReshape(unittest.TestCase):
         if fluid.core.is_compiled_with_cuda():
             self._places.append(paddle.CUDAPlace(0))
 
-    def test_case1(self):
+    def test_shape_norm_dims(self):
         for dtype in self._dtypes:
             x_np = np.random.randn(
                 2, 3, 4).astype(dtype) + 1j * np.random.randn(2, 3,
@@ -39,7 +39,7 @@ class TestComplexReshape(unittest.TestCase):
                     y_np = y_var.numpy()
                     self.assertTrue(np.allclose(np.reshape(x_np, shape), y_np))
 
-    def test_case2(self):
+    def test_shape_omit_dims(self):
         for dtype in self._dtypes:
             x_np = np.random.randn(
                 2, 3, 4).astype(dtype) + 1j * np.random.randn(2, 3,
