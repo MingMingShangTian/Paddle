@@ -604,4 +604,3 @@ HOSTDEVICE inline float abs(const complex64& a) {
 }  // namespace numext
 }  // namespace Eigen
 
-#define MKL_Complex8 paddle::platform::complex64

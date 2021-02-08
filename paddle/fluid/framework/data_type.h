@@ -20,6 +20,7 @@ limitations under the License. */
 #include "paddle/fluid/platform/bfloat16.h"
 #include "paddle/fluid/platform/complex128.h"
 #include "paddle/fluid/platform/complex64.h"
+#include "paddle/fluid/platform/complex.h"
 #include "paddle/fluid/platform/enforce.h"
 #include "paddle/fluid/platform/float16.h"
 
@@ -60,16 +61,16 @@ struct DataTypeTrait<void> {
   _ForEachDataTypeHelper_(callback, uint8_t, UINT8);                           \
   _ForEachDataTypeHelper_(callback, int16_t, INT16);                           \
   _ForEachDataTypeHelper_(callback, int8_t, INT8);                             \
-  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex64, COMPLEX64); \
-  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex128, COMPLEX128);
+  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex<float>, COMPLEX64); \
+  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex<double>, COMPLEX128);
 
 #define _ForEachDataTypeSmall_(callback)                                       \
   _ForEachDataTypeHelper_(callback, float, FP32);                              \
   _ForEachDataTypeHelper_(callback, double, FP64);                             \
   _ForEachDataTypeHelper_(callback, int, INT32);                               \
   _ForEachDataTypeHelper_(callback, int64_t, INT64);                           \
-  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex64, COMPLEX64); \
-  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex128, COMPLEX128);
+  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex<float>, COMPLEX64); \
+  _ForEachDataTypeHelper_(callback, ::paddle::platform::complex<double>, COMPLEX128);
 
 // For the use of thrust, as index-type elements can be only integers.
 #define _ForEachDataTypeTiny_(callback)          \

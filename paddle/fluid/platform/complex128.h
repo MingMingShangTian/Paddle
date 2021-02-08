@@ -602,4 +602,3 @@ HOSTDEVICE inline double abs(const complex128& a) {
 }  // namespace numext
 }  // namespace Eigen
 
-#define MKL_Complex16 paddle::platform::complex128
