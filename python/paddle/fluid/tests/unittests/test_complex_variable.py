@@ -38,24 +38,24 @@ class TestComplexVariable(unittest.TestCase):
         self.assertEqual(out.shape, x.shape)
 
     def test_attrs(self):
-        self._dtype = "complex64"
+        self._dtype = "complex<float>"
         self.compare()
-        self._dtype = "complex128"
+        self._dtype = "complex<double>"
         self.compare()
 
     def test_convert_np_dtype_to_dtype(self):
         self.assertEqual(
-            convert_np_dtype_to_dtype_(np.complex64),
+            convert_np_dtype_to_dtype_(np.complex<float>),
             core.VarDesc.VarType.COMPLEX64)
         self.assertEqual(
-            convert_np_dtype_to_dtype_(np.complex64),
+            convert_np_dtype_to_dtype_(np.complex<float>),
             core.VarDesc.VarType.COMPLEX64)
 
     def test_convert_dtype(self):
         self.assertEqual(
-            convert_dtype(core.VarDesc.VarType.COMPLEX64), "complex64")
+            convert_dtype(core.VarDesc.VarType.COMPLEX64), "complex<float>")
         self.assertEqual(
-            convert_dtype(core.VarDesc.VarType.COMPLEX128), "complex128")
+            convert_dtype(core.VarDesc.VarType.COMPLEX128), "complex<double>")
 
 
 if __name__ == '__main__':

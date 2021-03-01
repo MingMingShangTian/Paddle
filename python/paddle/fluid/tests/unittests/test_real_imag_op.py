@@ -91,7 +91,7 @@ class TestRealAPI(unittest.TestCase):
         paddle.enable_static()
         # prepare test attrs
         self.api = "real"
-        self.dtypes = ["complex64", "complex128"]
+        self.dtypes = ["complex<float>", "complex<double>"]
         self.places = [paddle.CPUPlace()]
         if paddle.is_compiled_with_cuda():
             self.places.append(paddle.CUDAPlace(0))
@@ -156,7 +156,7 @@ class TestImagAPI(TestRealAPI):
         paddle.enable_static()
         # prepare test attrs
         self.api = "imag"
-        self.dtypes = ["complex64", "complex128"]
+        self.dtypes = ["complex<float>", "complex<double>"]
         self.places = [paddle.CPUPlace()]
         if paddle.is_compiled_with_cuda():
             self.places.append(paddle.CUDAPlace(0))

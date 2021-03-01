@@ -13,8 +13,7 @@
 // limitations under the License.
 
 #include "paddle/fluid/operators/abs_op.h"
-#include "paddle/fluid/platform/complex128.h"
-#include "paddle/fluid/platform/complex64.h"
+
 #include "paddle/fluid/platform/float16.h"
 
 namespace ops = paddle::operators;
@@ -26,9 +25,9 @@ REGISTER_OP_CUDA_KERNEL(
     ops::AbsKernel<paddle::platform::CUDADeviceContext,
                    paddle::platform::float16>,
     ops::AbsKernel<paddle::platform::CUDADeviceContext,
-                   paddle::platform::complex64>,
+                   paddle::platform::complex<float>>,
     ops::AbsKernel<paddle::platform::CUDADeviceContext,
-                   paddle::platform::complex128>);
+                   paddle::platform::complex<double>>);
 
 REGISTER_OP_CUDA_KERNEL(
     abs_grad, ops::AbsGradKernel<paddle::platform::CUDADeviceContext, float>,
@@ -38,9 +37,9 @@ REGISTER_OP_CUDA_KERNEL(
     ops::AbsGradKernel<paddle::platform::CUDADeviceContext,
                        paddle::platform::float16>,
     ops::AbsGradKernel<paddle::platform::CUDADeviceContext,
-                       paddle::platform::complex64>,
+                       paddle::platform::complex<float>>,
     ops::AbsGradKernel<paddle::platform::CUDADeviceContext,
-                       paddle::platform::complex128>);
+                       paddle::platform::complex<double>>);
 
 REGISTER_OP_CUDA_KERNEL(
     abs_grad_grad,
@@ -51,6 +50,6 @@ REGISTER_OP_CUDA_KERNEL(
     ops::AbsDoubleGradKernel<paddle::platform::CUDADeviceContext,
                              paddle::platform::float16>,
     ops::AbsDoubleGradKernel<paddle::platform::CUDADeviceContext,
-                             paddle::platform::complex64>,
+                             paddle::platform::complex<float>>,
     ops::AbsDoubleGradKernel<paddle::platform::CUDADeviceContext,
-                             paddle::platform::complex128>);
+                             paddle::platform::complex<double>>);

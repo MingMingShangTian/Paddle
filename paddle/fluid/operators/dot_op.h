@@ -23,8 +23,8 @@ namespace paddle {
 namespace operators {
 
 using Tensor = framework::Tensor;
-using complex64 = platform::complex64;
-using complex128 = platform::complex128;
+using complex<float> = platform::complex<float>;
+using complex<double> = platform::complex<double>;
 
 template <typename T, typename R>
 struct P {

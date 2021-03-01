@@ -113,8 +113,9 @@ int DataTypeNumAlign(const proto::VarType::Type t) {
     cast_type_num = static_cast<int>(t) - 21;
   } else {
     PADDLE_THROW(platform::errors::Unavailable(
-        "Only supports to align data type include float32, float64, complex64 "
-        "and complex128, but received data type is `s`.",
+        "Only supports to align data type include float32, float64, "
+        "complex<float> "
+        "and complex<double>, but received data type is `s`.",
         DataTypeToString(t)));
   }
   return cast_type_num;

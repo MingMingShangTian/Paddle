@@ -2239,7 +2239,7 @@ def conj(x, name=None):
 
     Args:
         x (Tensor): The input tensor which hold the complex numbers. 
-            Optional data types are: complex64, complex128, float32, float64, int32 or int64.
+            Optional data types are: complex<float>, complex<double>, float32, float64, int32 or int64.
         name (str, optional): The default value is None. Normally there is no need for
             user to set this property.  For more information, please refer to :ref:`api_guide_Name`
 
@@ -2252,12 +2252,12 @@ def conj(x, name=None):
 
           import paddle
           data=paddle.to_tensor([[1+1j, 2+2j, 3+3j], [4+4j, 5+5j, 6+6j]])
-          #Tensor(shape=[2, 3], dtype=complex64, place=CUDAPlace(0), stop_gradient=True,
+          #Tensor(shape=[2, 3], dtype=complex<float>, place=CUDAPlace(0), stop_gradient=True,
           #       [[(1+1j), (2+2j), (3+3j)],
           #        [(4+4j), (5+5j), (6+6j)]])
 
           conj_data=paddle.conj(data)
-          #Tensor(shape=[2, 3], dtype=complex64, place=CUDAPlace(0), stop_gradient=True,
+          #Tensor(shape=[2, 3], dtype=complex<float>, place=CUDAPlace(0), stop_gradient=True,
           #       [[(1-1j), (2-2j), (3-3j)],
           #        [(4-4j), (5-5j), (6-6j)]])
 
@@ -2265,7 +2265,7 @@ def conj(x, name=None):
     if in_dygraph_mode():
         return core.ops.conj(x)
 
-    check_variable_and_dtype(x, "x", ['complex64', 'complex128', 'float32', 'float64', 'int32', 'int64'], 'conj')
+    check_variable_and_dtype(x, "x", ['complex<float>', 'complex<double>', 'float32', 'float64', 'int32', 'int64'], 'conj')
 
     helper = LayerHelper('conj', **locals())
     out = helper.create_variable_for_type_inference(

@@ -605,7 +605,7 @@ def to_variable(value, name=None, zero_copy=None, dtype=None):
             Can be a list, tuple, NumPy ndarray, Variable, Tensor.
             The shape can be multi-dimensional. The data type is one of 
             numpy\.{float16, float32, float64, int16, int32, int64, 
-            uint8, uint16, complex64, complex128}.
+            uint8, uint16, complex<float>, complex<double>}.
         name(str, optional): The default value is None. Normally there is no 
             need for user to set this property. For more information, please 
             refer to :ref:`api_guide_Name` . 
@@ -640,7 +640,7 @@ def to_variable(value, name=None, zero_copy=None, dtype=None):
             c = np.array([2+1j, 2])
             z = fluid.dygraph.to_variable(c)
             z.numpy() # array([2.+1.j, 2.+0.j])
-            z.dtype # 'complex128'
+            z.dtype # 'complex<double>'
 
             y = fluid.dygraph.to_variable([[0.1, 1.2], [2.2, 3.1], [4.9, 5.2]])
             y.shape     # [3L, 2L]

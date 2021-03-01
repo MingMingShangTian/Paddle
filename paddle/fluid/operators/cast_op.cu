@@ -105,6 +105,6 @@ REGISTER_OP_CUDA_KERNEL(
     ops::CastOpKernel<paddle::platform::CUDADeviceContext,
                       paddle::platform::float16>,
     ops::CastOpKernel<paddle::platform::CUDADeviceContext,
-                      paddle::platform::complex64>,
+                      paddle::platform::complex<float>>,
     ops::CastOpKernel<paddle::platform::CUDADeviceContext,
-                      paddle::platform::complex128>);
+                      paddle::platform::complex<double>>);

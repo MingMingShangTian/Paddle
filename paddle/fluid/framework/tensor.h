@@ -208,8 +208,10 @@ class Tensor {
    *
    * After the introduction of complex number calculations, Ops that support
    * complex number calculations generally support type promotion, such as
-   * x(float32) + y(complex64) = out(complex64), then the type of the grad
-   * tensor should be dout(complex64), dx(float32), dy (complex64), but the
+   * x(float32) + y(complex<float>) = out(complex<float>), then the type of the
+   * grad
+   * tensor should be dout(complex<float>), dx(float32), dy (complex<float>),
+   * but the
    * type of dx to be recognized to be float32 by the grad Op relay on the type
    * of forward tensor x. But many of our ops have registered InplaceInferer,
    * covering the tensor memory of x with out, so as to save storage.

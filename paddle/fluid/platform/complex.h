@@ -45,8 +45,8 @@ struct NumTraits;
 namespace paddle {
 namespace platform {
 
-template<typename T>
-struct PADDLE_ALIGN(sizeof(T)*2) complex {
+template <typename T>
+struct PADDLE_ALIGN(sizeof(T) * 2) complex {
  public:
   T real;
   T imag;
@@ -82,18 +82,36 @@ struct PADDLE_ALIGN(sizeof(T)*2) complex {
 #endif
 
   HOSTDEVICE complex(const float& val) : real(val), imag(0) {}
-  HOSTDEVICE complex(const double& val)
+  HOSTDEVICE complex(const double& val) : real(static_cast<T>(val)), imag(0) {}
+  HOSTDEVICE complex(const int& val) : real(static_cast<T>(val)), imag(0) {}
+  HOSTDEVICE complex(const int64_t& val) : real(static_cast<T>(val)), imag(0) {}
+  HOSTDEVICE complex(const paddle::platform::float16& val)
       : real(static_cast<T>(val)), imag(0) {}
-  HOSTDEVICE complex(const int& val)
-      : real(static_cast<T>(val)), imag(0) {}
-  HOSTDEVICE complex(const int64_t& val)
-      : real(static_cast<T>(val)), imag(0) {}
-  HOSTDEVICE complex(const complex128& val)
-      : real(static_cast<T>(val.real)),
-        imag(static_cast<T>(val.imag)) {}
 
-  HOSTDEVICE inline explicit operator std::complex<T>() {
-    return static_cast<std::complex<T>>(std::complex<T>(real, imag));
+  HOSTDEVICE complex(const paddle::platform::bfloat16& val)
+      : real(static_cast<T>(val)), imag(0) {}
+
+  template <typename U = T>
+  HOSTDEVICE explicit complex(
+      const typename std::enable_if<std::is_same<U, float>::value,
+                                    complex<double>>::type& other)
+      : real(other.real), imag(other.imag) {}
+
+  template <typename U = T>
+  HOSTDEVICE explicit complex(
+      const typename std::enable_if<std::is_same<U, double>::value,
+                                    complex<float>>::type& other)
+      : real(other.real), imag(other.imag) {}
+
+  /*
+HOSTDEVICE complex(const complex<double>& val)
+  : real(static_cast<T>(val.real)),
+    imag(static_cast<T>(val.imag)) {}
+    */
+
+  // HOSTDEVICE inline explicit operator std::complex<T>() {
+  HOSTDEVICE inline operator std::complex<T>() {
+    return std::complex<T>(real, imag);
   }
 
   /*
@@ -101,7 +119,7 @@ struct PADDLE_ALIGN(sizeof(T)*2) complex {
       : real(complex(static_cast<T>(val)).real) {}
       */
 
-  HOSTDEVICE complex<T>(const std::complex<T> val)
+  HOSTDEVICE inline complex<T>(const std::complex<T> val)
       : real(val.real()), imag(val.imag()) {}
 
   HOSTDEVICE inline complex<T>& operator=(bool b) {
@@ -170,7 +188,9 @@ struct PADDLE_ALIGN(sizeof(T)*2) complex {
     return *this;
   }
 
-  HOSTDEVICE inline operator float() const { return static_cast<float >(this->real); }
+  HOSTDEVICE inline operator float() const {
+    return static_cast<float>(this->real);
+  }
 
   HOSTDEVICE inline explicit operator bool() const {
     return static_cast<bool>(this->real) || static_cast<bool>(this->imag);
@@ -212,56 +232,60 @@ struct PADDLE_ALIGN(sizeof(T)*2) complex {
     return static_cast<double>(this->real);
   }
 
-  HOSTDEVICE inline operator complex128() const {
-    return complex128(static_cast<double>(this->real),
-                      static_cast<double>(this->imag));
+  HOSTDEVICE inline operator complex<double>() const {
+    return complex<double>(static_cast<double>(this->real),
+                           static_cast<double>(this->imag));
   }
 };
 
 template <typename T>
-HOSTDEVICE inline complex<T> operator+(const complex<T>& a, const complex<T>& b) {
+HOSTDEVICE inline complex<T> operator+(const complex<T>& a,
+                                       const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::complex<T>(a.real, a.imag) +
-                   thrust::complex<T>(b.real, b.imag));
+                    thrust::complex<T>(b.real, b.imag));
 #else
   return complex<T>(a.real + b.real, a.imag + b.imag);
 #endif
 }
 
 template <typename T>
-HOSTDEVICE inline complex<T> operator-(const complex<T>& a, const complex<T>& b) {
+HOSTDEVICE inline complex<T> operator-(const complex<T>& a,
+                                       const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
-  return complex(thrust::complex<T>(a.real, a.imag) -
-                   thrust::complex<T>(b.real, b.imag));
+  return complex<T>(thrust::complex<T>(a.real, a.imag) -
+                    thrust::complex<T>(b.real, b.imag));
 #else
   return complex<T>(a.real - b.real, a.imag - b.imag);
 #endif
 }
 
 template <typename T>
-HOSTDEVICE inline complex<T> operator*(const complex<T>& a, const complex<T>& b) {
+HOSTDEVICE inline complex<T> operator*(const complex<T>& a,
+                                       const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::complex<T>(a.real, a.imag) *
-                   thrust::complex<T>(b.real, b.imag));
+                    thrust::complex<T>(b.real, b.imag));
 #else
   return complex<T>(a.real * b.real - a.imag * b.imag,
-                   a.imag * b.real + b.imag * a.real);
+                    a.imag * b.real + b.imag * a.real);
 #endif
 }
 
 template <typename T>
-HOSTDEVICE inline complex<T> operator/(const complex<T>& a, const complex<T>& b) {
+HOSTDEVICE inline complex<T> operator/(const complex<T>& a,
+                                       const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::complex<T>(a.real, a.imag) /
-                   thrust::complex<T>(b.real, b.imag));
+                    thrust::complex<T>(b.real, b.imag));
 #else
   T denominator = b.real * b.real + b.imag * b.imag;
   return complex<T>((a.real * b.real + a.imag * b.imag) / denominator,
-                   (a.imag * b.real - a.real * b.imag) / denominator);
+                    (a.imag * b.real - a.real * b.imag) / denominator);
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T> operator-(const complex<T>& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(-thrust::complex<T>(a.real, a.imag));
@@ -273,111 +297,112 @@ HOSTDEVICE inline complex<T> operator-(const complex<T>& a) {
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>& operator+=(complex<T>& a,  // NOLINT
-const complex<T>& b) {
+                                         const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
-a = complex<T>(thrust::complex<T>(a.real, a.imag) +=
-                thrust::complex<T>(b.real, b.imag));
+  a = complex<T>(thrust::complex<T>(a.real, a.imag) +=
+                 thrust::complex<T>(b.real, b.imag));
   return a;
 #else
-a.real += b.real;
-a.imag += b.imag;
-return a;
+  a.real += b.real;
+  a.imag += b.imag;
+  return a;
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>& operator-=(complex<T>& a,  // NOLINT
-const complex<T>& b) {
+                                         const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
-a = complex<T>(thrust::complex<T>(a.real, a.imag) -=
-                thrust::complex<T>(b.real, b.imag));
+  a = complex<T>(thrust::complex<T>(a.real, a.imag) -=
+                 thrust::complex<T>(b.real, b.imag));
   return a;
 #else
-a.real -= b.real;
-a.imag -= b.imag;
-return a;
+  a.real -= b.real;
+  a.imag -= b.imag;
+  return a;
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>& operator*=(complex<T>& a,  // NOLINT
-const complex<T>& b) {
+                                         const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
-a = complex<T>(thrust::complex<T>(a.real, a.imag) *=
-                thrust::complex<T>(b.real, b.imag));
+  a = complex<T>(thrust::complex<T>(a.real, a.imag) *=
+                 thrust::complex<T>(b.real, b.imag));
   return a;
 #else
-a.real = a.real * b.real - a.imag * b.imag;
-a.imag = a.imag * b.real + b.imag * a.real;
-return a;
+  a.real = a.real * b.real - a.imag * b.imag;
+  a.imag = a.imag * b.real + b.imag * a.real;
+  return a;
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>& operator/=(complex<T>& a,  // NOLINT
-const complex<T>& b) {
+                                         const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
-a = complex<T>(thrust::complex<T>(a.real, a.imag) /=
-                thrust::complex<T>(b.real, b.imag));
+  a = complex<T>(thrust::complex<T>(a.real, a.imag) /=
+                 thrust::complex<T>(b.real, b.imag));
   return a;
 #else
-T denominator = b.real * b.real + b.imag * b.imag;
-a.real = (a.real * b.real + a.imag * b.imag) / denominator;
-a.imag = (a.imag * b.real - a.real * b.imag) / denominator;
-return a;
+  T denominator = b.real * b.real + b.imag * b.imag;
+  a.real = (a.real * b.real + a.imag * b.imag) / denominator;
+  a.imag = (a.imag * b.real - a.real * b.imag) / denominator;
+  return a;
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T> raw_uint16_to_complex(uint16_t a) {
-complex<T> res;
-res.real = a;
-return res;
+  complex<T> res;
+  res.real = a;
+  return res;
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool operator==(const complex<T>& a, const complex<T>& b) {
   return a.real == b.real && a.imag == b.imag;
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool operator!=(const complex<T>& a, const complex<T>& b) {
   return a.real != b.real || a.imag != b.imag;
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool operator<(const complex<T>& a, const complex<T>& b) {
   return static_cast<T>(a.real) < static_cast<T>(b.real);
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool operator<=(const complex<T>& a, const complex<T>& b) {
   return static_cast<T>(a.real) <= static_cast<T>(b.real);
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool operator>(const complex<T>& a, const complex<T>& b) {
   return static_cast<T>(a.real) > static_cast<T>(b.real);
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool operator>=(const complex<T>& a, const complex<T>& b) {
   return static_cast<T>(a.real) >= static_cast<T>(b.real);
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool(isnan)(const complex<T>& a) {
 #if defined(__CUDA_ARCH__)
   // __isnanf not supported on HIP platform
   return __isnanf(a.real) || __isnanf(a.imag);
 #else
+  // return std::isnan<T>(a.real) || std::isnan(a.imag);
   return std::isnan(a.real) || std::isnan(a.imag);
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool isinf(const complex<T>& a) {
 #if defined(__CUDA_ARCH__)
   // __isinff not supported on HIP platform
@@ -387,12 +412,12 @@ HOSTDEVICE inline bool isinf(const complex<T>& a) {
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline bool(isfinite)(const complex<T>& a) {
   return !((isnan)(a)) && !((isinf)(a));
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline float(abs)(const complex<T>& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::abs(thrust::complex<T>(a.real, a.imag)));
@@ -401,17 +426,17 @@ HOSTDEVICE inline float(abs)(const complex<T>& a) {
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>(pow)(const complex<T>& a, const complex<T>& b) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::pow(thrust::complex<T>(a.real, a.imag),
-                               thrust::complex<T>(b.real, b.imag)));
+                                thrust::complex<T>(b.real, b.imag)));
 #else
   return std::pow(std::complex<T>(a), std::complex<T>(b));
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>(sqrt)(const complex<T>& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::sqrt(thrust::complex<T>(a.real, a.imag)));
@@ -420,7 +445,7 @@ HOSTDEVICE inline complex<T>(sqrt)(const complex<T>& a) {
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>(tanh)(const complex<T>& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::tanh(thrust::complex<T>(a.real, a.imag)));
@@ -429,7 +454,7 @@ HOSTDEVICE inline complex<T>(tanh)(const complex<T>& a) {
 #endif
 }
 
-template<typename T>
+template <typename T>
 HOSTDEVICE inline complex<T>(log)(const complex<T>& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
   return complex<T>(thrust::log(thrust::complex<T>(a.real, a.imag)));
@@ -438,7 +463,7 @@ HOSTDEVICE inline complex<T>(log)(const complex<T>& a) {
 #endif
 }
 
-template<typename T>
+template <typename T>
 inline std::ostream& operator<<(std::ostream& os, const complex<T>& a) {
   os << "real:" << a.real << " imag:" << a.imag;
   return os;
@@ -459,9 +484,10 @@ struct is_pod<paddle::platform::complex<T>> {
 template <typename T>
 struct is_floating_point<paddle::platform::complex<T>>
     : std::integral_constant<
-        bool, std::is_same<paddle::platform::complex<T>,
-            typename std::remove_cv<
-                paddle::platform::complex<T>>::type>::value> {};
+          bool, std::is_same<paddle::platform::complex<T>,
+                             typename std::remove_cv<
+                                 paddle::platform::complex<T>>::type>::value> {
+};
 template <typename T>
 struct is_signed<paddle::platform::complex<T>> {
   static const bool value = false;
@@ -546,97 +572,4 @@ struct numeric_limits<paddle::platform::complex<T>> {
 };
 
 }  // namespace std
-namespace Eigen {
-
-template <typename T>
-struct NumTraits<paddle::platform::complex<T>> : GenericNumTraits<std::complex<T>> {
-  typedef float Real;
-  typedef typename NumTraits<float>::Literal Literal;
-  enum {
-    IsComplex = 1,
-    RequireInitialization = NumTraits<float>::RequireInitialization,
-    ReadCost = 2 * NumTraits<float>::ReadCost,
-    AddCost = 2 * NumTraits<Real>::AddCost,
-    MulCost = 4 * NumTraits<Real>::MulCost + 2 * NumTraits<Real>::AddCost
-  };
-
-  EIGEN_DEVICE_FUNC
-  static inline Real epsilon() { return NumTraits<Real>::epsilon(); }
-  EIGEN_DEVICE_FUNC
-  static inline Real dummy_precision() {
-    return NumTraits<Real>::dummy_precision();
-  }
-  EIGEN_DEVICE_FUNC
-  static inline int digits10() { return NumTraits<Real>::digits10(); }
-};
-
-namespace numext {
-
-template<typename T>
-HOSTDEVICE inline bool(isnan)(const paddle::platform::complex<T>& a) {
-  return (paddle::platform::isnan)(a);
-}
-
-template <typename T>
-HOSTDEVICE inline bool(isinf)(const paddle::platform::complex<T>& a) {
-  return (paddle::platform::isinf)(a);
-}
-
-template<typename T>
-HOSTDEVICE inline bool(isfinite)(const paddle::platform::complex<T>& a) {
-  return (paddle::platform::isfinite)(a);
-}
-
-template <typename T>
-HOSTDEVICE inline paddle::platform::complex<T> exp(const paddle::platform::complex<T>& a) {
-  float com = ::expf(a.real);
-  float res_real = com * ::cosf(a.imag);
-  float res_imag = com * ::sinf(a.imag);
-  return paddle::platform::complex<T>(res_real, res_imag);
-}
-
-template <typename  T>
-HOSTDEVICE inline paddle::platform::complex<T> log(const paddle::platform::complex<T>& a) {
-  return paddle::platform::log(a);
-}
-
-template <typename  T>
-HOSTDEVICE inline paddle::platform::complex<T> tanh(const paddle::platform::complex<T>& a) {
-  return paddle::platform::tanh(a);
-}
-
-template <typename  T>
-HOSTDEVICE inline paddle::platform::complex<T> sqrt(const paddle::platform::complex<T>& a) {
-  return paddle::platform::sqrt(a);
-}
-
-template <typename  T>
-HOSTDEVICE inline paddle::platform::complex<T> ceil(const paddle::platform::complex<T>& a) {
-  return paddle::platform::complex<T>(::ceilf(a.real), ::ceilf(a.imag));
-}
-
-template <typename  T>
-HOSTDEVICE inline paddle::platform::complex<T> floor(const paddle::platform::complex<T>& a) {
-  return paddle::platform::complex<T>(::floorf(a.real), ::floor(a.imag));
-}
-
-template <typename  T>
-HOSTDEVICE inline paddle::platform::complex<T> round(const paddle::platform::complex<T>& a) {
-  return paddle::platform::complex<T>(::roundf(a.real), ::roundf(a.imag));
-}
-
-template <typename  T>
-HOSTDEVICE inline paddle::platform::complex<T> pow(const paddle::platform::complex<T>& a, const paddle::platform::complex<T>& b) {
-  return paddle::platform::pow(a, b);
-}
-
-template <typename T>
-HOSTDEVICE inline float abs(const paddle::platform::complex<T>& a) {
-  return paddle::platform::abs(a);
-}
-
-}  // namespace numext
-}  // namespace Eigen
-
-#define MKL_Complex8 paddle::platform::complex<float>
-#define MKL_Complex16 paddle::platform::complex<double>
+namespace Eigen {}  // namespace Eigen

@@ -37,7 +37,7 @@ class TestConjOp(OpTest):
         self.init_grad_input_output()
 
     def init_dtype_type(self):
-        self.dtype = np.complex64
+        self.dtype = np.complex<float>
 
     def init_input_output(self):
         x = (np.random.random((12, 14)) + 1j * np.random.random(
@@ -102,7 +102,7 @@ class TestComplexConjOp(unittest.TestCase):
             input_dict, np_res = init_input_output(dtype)
             for place in self._places:
                 with static.program_guard(static.Program()):
-                    x_dtype = np.complex64 if dtype == "float32" else np.complex128
+                    x_dtype = np.complex<float> if dtype == "float32" else np.complex<double>
                     x = static.data(
                         name="x", shape=[2, 20, 2, 3], dtype=x_dtype)
                     out = paddle.conj(x)

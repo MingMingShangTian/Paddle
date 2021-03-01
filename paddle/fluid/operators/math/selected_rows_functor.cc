@@ -18,8 +18,6 @@ limitations under the License. */
 
 #include "paddle/fluid/operators/math/blas.h"
 #include "paddle/fluid/operators/math/selected_rows_functor.h"
-#include "paddle/fluid/platform/complex128.h"
-#include "paddle/fluid/platform/complex64.h"
 
 namespace paddle {
 namespace operators {
@@ -551,9 +549,9 @@ template struct MergeAdd<platform::CPUDeviceContext, int64_t>;
 template struct MergeAdd<platform::CPUDeviceContext, float>;
 template struct MergeAdd<platform::CPUDeviceContext, double>;
 template struct MergeAdd<platform::CPUDeviceContext,
-                         paddle::platform::complex64>;
+                         paddle::platform::complex<float>>;
 template struct MergeAdd<platform::CPUDeviceContext,
-                         paddle::platform::complex128>;
+                         paddle::platform::complex<double>>;
 
 template struct MergeAverage<platform::CPUDeviceContext, int>;
 template struct MergeAverage<platform::CPUDeviceContext, int64_t>;

@@ -33,7 +33,7 @@ _supported_int_dtype_ = [
 # NOTE(chenweihang): We currently do not fully support the type promotion 
 # between tensors. Parting support here is because the interoperation of 
 # real and complex numbers in paddle quantum is very frequent, such as the 
-# binary operation between `float` and `complex64`, so we must support the 
+# binary operation between `float` and `complex<float>`, so we must support the 
 # correct type promotion on the APIs paddle quantum used.
 # Now only check in dygraph (paddle quantum based dygraph)
 # Full type promotion support will need to be fully verified later.

@@ -39,7 +39,7 @@ def real(x, name=None):
     Returns a new tensor containing real values of the input tensor.
 
     Args:
-        x (Tensor): the input tensor, its data type could be complex64 or complex128.
+        x (Tensor): the input tensor, its data type could be complex<float> or complex<double>.
         name (str, optional): The default value is None. Normally there is no need for
             user to set this property. For more information, please refer to :ref:`api_guide_Name` .
       
@@ -53,7 +53,7 @@ def real(x, name=None):
 
             x = paddle.to_tensor(
                 [[1 + 6j, 2 + 5j, 3 + 4j], [4 + 3j, 5 + 2j, 6 + 1j]])
-            # Tensor(shape=[2, 3], dtype=complex64, place=CUDAPlace(0), stop_gradient=True,
+            # Tensor(shape=[2, 3], dtype=complex<float>, place=CUDAPlace(0), stop_gradient=True,
             #        [[(1+6j), (2+5j), (3+4j)],
             #         [(4+3j), (5+2j), (6+1j)]])
 
@@ -70,7 +70,7 @@ def real(x, name=None):
     if in_dygraph_mode():
         return core.ops.real(x)
 
-    check_variable_and_dtype(x, 'x', ['complex64', 'complex128'], 'real')
+    check_variable_and_dtype(x, 'x', ['complex<float>', 'complex<double>'], 'real')
     helper = LayerHelper('real', **locals())
     out = helper.create_variable_for_type_inference(
         dtype=_complex_to_real_dtype(helper.input_dtype()))
@@ -83,7 +83,7 @@ def imag(x, name=None):
     Returns a new tensor containing imaginary values of input tensor.
 
     Args:
-        x (Tensor): the input tensor, its data type could be complex64 or complex128.
+        x (Tensor): the input tensor, its data type could be complex<float> or complex<double>.
         name (str, optional): The default value is None. Normally there is no need for
             user to set this property. For more information, please refer to :ref:`api_guide_Name` .
 
@@ -97,7 +97,7 @@ def imag(x, name=None):
 
             x = paddle.to_tensor(
                 [[1 + 6j, 2 + 5j, 3 + 4j], [4 + 3j, 5 + 2j, 6 + 1j]])
-            # Tensor(shape=[2, 3], dtype=complex64, place=CUDAPlace(0), stop_gradient=True,
+            # Tensor(shape=[2, 3], dtype=complex<float>, place=CUDAPlace(0), stop_gradient=True,
             #        [[(1+6j), (2+5j), (3+4j)],
             #         [(4+3j), (5+2j), (6+1j)]])
 
@@ -114,7 +114,7 @@ def imag(x, name=None):
     if in_dygraph_mode():
         return core.ops.imag(x)
 
-    check_variable_and_dtype(x, 'x', ['complex64', 'complex128'], 'imag')
+    check_variable_and_dtype(x, 'x', ['complex<float>', 'complex<double>'], 'imag')
     helper = LayerHelper('imag', **locals())
     out = helper.create_variable_for_type_inference(
         dtype=_complex_to_real_dtype(helper.input_dtype()))

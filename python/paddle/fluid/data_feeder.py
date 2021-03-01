@@ -36,8 +36,8 @@ _PADDLE_DTYPE_2_NUMPY_DTYPE = {
     core.VarDesc.VarType.INT32: 'int32',
     core.VarDesc.VarType.INT64: 'int64',
     core.VarDesc.VarType.UINT8: 'uint8',
-    core.VarDesc.VarType.COMPLEX64: 'complex64',
-    core.VarDesc.VarType.COMPLEX128: 'complex128',
+    core.VarDesc.VarType.COMPLEX64: 'complex<float>',
+    core.VarDesc.VarType.COMPLEX128: 'complex<double>',
 }
 
 
@@ -48,15 +48,15 @@ def convert_dtype(dtype):
     elif isinstance(dtype, type):
         if dtype in [
                 np.bool, np.float16, np.float32, np.float64, np.int8, np.int16,
-                np.int32, np.int64, np.uint8, np.complex64, np.complex128
+                np.int32, np.int64, np.uint8, np.complex<float>, np.complex<double>
         ]:
             return dtype.__name__
     else:
         if dtype in [
                 'bool', 'float16', 'float32', 'float64', 'int8', 'int16',
-                'int32', 'int64', 'uint8', 'complex64', 'complex128', u'bool',
+                'int32', 'int64', 'uint8', 'complex<float>', 'complex<double>', u'bool',
                 u'float16', u'float32', u'float64', u'int8', u'int16', u'int32',
-                u'int64', u'uint8', u'complex64', u'complex128'
+                u'int64', u'uint8', u'complex<float>', u'complex<double>'
         ]:
             # this code is a little bit dangerous, since error could happen
             # when casting no-ascii code to str in python2.
@@ -67,7 +67,7 @@ def convert_dtype(dtype):
 
     raise TypeError(
         "dtype must be any of [bool, float16, float32, float64, int8, int16, "
-        "int32, int64, uint8, complex64, complex128], but received %s" % dtype)
+        "int32, int64, uint8, complex<float>, complex<double>], but received %s" % dtype)
 
 
 def check_variable_and_dtype(input,

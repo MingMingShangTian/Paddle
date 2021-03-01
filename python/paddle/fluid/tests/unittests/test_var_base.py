@@ -131,7 +131,7 @@ class TestVarBase(unittest.TestCase):
                 self.assertTrue(np.array_equal(z.numpy(), 2 * self.array))
 
                 x = paddle.to_tensor(
-                    [1 + 2j, 1 - 2j], dtype='complex64', place=place)
+                    [1 + 2j, 1 - 2j], dtype='complex<float>', place=place)
                 y = paddle.to_tensor(x)
                 self.assertTrue(np.array_equal(x.numpy(), [1 + 2j, 1 - 2j]))
                 self.assertEqual(y.dtype, core.VarDesc.VarType.COMPLEX64)

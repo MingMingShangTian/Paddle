@@ -67,7 +67,7 @@ def to_tensor(data, dtype=None, place=None, stop_gradient=True):
             Can be a scalar, list, tuple, numpy\.ndarray, paddle\.Tensor.
         dtype(str|np.dtype, optional): The desired data type of returned tensor. Can be 'bool' , 'float16' , 
             'float32' , 'float64' , 'int8' , 'int16' , 'int32' , 'int64' , 'uint8',
-            'complex64' , 'complex128'. Default: None, infers dtype from ``data`` 
+            'complex<float>' , 'complex<double>'. Default: None, infers dtype from ``data`` 
             except for python float number which gets dtype from ``get_default_type`` .
         place(CPUPlace|CUDAPinnedPlace|CUDAPlace|str, optional): The place to allocate Tensor. Can be  
             CPUPlace, CUDAPinnedPlace, CUDAPlace. Default: None, means global place. If ``place`` is 
@@ -80,7 +80,7 @@ def to_tensor(data, dtype=None, place=None, stop_gradient=True):
     Raises:
         TypeError: If the data type of ``data`` is not scalar, list, tuple, numpy.ndarray, paddle.Tensor
         ValueError: If ``data`` is tuple|list, it can't contain nested tuple|list with different lengths , such as: [[1, 2], [3, 4, 5]]
-        TypeError: If ``dtype`` is not bool, float16, float32, float64, int8, int16, int32, int64, uint8, complex64, complex128
+        TypeError: If ``dtype`` is not bool, float16, float32, float64, int8, int16, int32, int64, uint8, complex<float>, complex<double>
         ValueError: If ``place`` is not paddle.CPUPlace, paddle.CUDAPinnedPlace, paddle.CUDAPlace or specified pattern string. 
 
     Examples:
@@ -110,11 +110,11 @@ def to_tensor(data, dtype=None, place=None, stop_gradient=True):
         #        [[0.10000000, 0.20000000],
         #         [0.30000001, 0.40000001]])
 
-        type(paddle.to_tensor([[1+1j, 2], [3+2j, 4]], dtype='complex64'))
+        type(paddle.to_tensor([[1+1j, 2], [3+2j, 4]], dtype='complex<float>'))
         # <class 'paddle.VarBase'>
 
-        paddle.to_tensor([[1+1j, 2], [3+2j, 4]], dtype='complex64')
-        # Tensor(shape=[2, 2], dtype=complex64, place=CUDAPlace(0), stop_gradient=True,
+        paddle.to_tensor([[1+1j, 2], [3+2j, 4]], dtype='complex<float>')
+        # Tensor(shape=[2, 2], dtype=complex<float>, place=CUDAPlace(0), stop_gradient=True,
         #        [[(1+1j), (2+0j)],
         #         [(3+2j), (4+0j)]])
     """
@@ -158,13 +158,13 @@ def to_tensor(data, dtype=None, place=None, stop_gradient=True):
                 "Can't constructs a 'paddle.Tensor' with data type {}, data type must be scalar|list|tuple|numpy.ndarray|paddle.Tensor".
                 format(type(data)))
         if not dtype and data.dtype in [
-                'float16', 'float32', 'float64', 'complex64', 'complex128'
+                'float16', 'float32', 'float64', 'complex<float>', 'complex<double>'
         ]:
             default_type = paddle.get_default_dtype()
             if np.iscomplexobj(data):
-                default_type = 'complex64' if default_type in [
+                default_type = 'complex<float>' if default_type in [
                     'float16', 'float32'
-                ] else 'complex128'
+                ] else 'complex<double>'
             data = data.astype(default_type)
 
     if dtype and convert_dtype(dtype) != data.dtype:

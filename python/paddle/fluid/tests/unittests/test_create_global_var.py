@@ -36,7 +36,7 @@ class TestCreateGlobalVarError(unittest.TestCase):
             # Since create_global_var support all dtype in convert_dtype(). 
             # Hence, assertRaises ValueError not TypeError. 
             def test_dtype():
-                fluid.layers.create_global_var([1, 2, 3], 2.0, np.complex128)
+                fluid.layers.create_global_var([1, 2, 3], 2.0, np.complex<double>)
 
             self.assertRaises(TypeError, test_dtype)
 

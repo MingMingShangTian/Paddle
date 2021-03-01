@@ -17,8 +17,6 @@ limitations under the License. */
 #include <string>
 
 #include "paddle/fluid/operators/elementwise/elementwise_op.h"
-#include "paddle/fluid/platform/complex128.h"
-#include "paddle/fluid/platform/complex64.h"
 
 namespace paddle {
 namespace framework {
@@ -129,9 +127,9 @@ REGISTER_OP_CPU_KERNEL(
     ops::ElementwiseSubKernel<paddle::platform::CPUDeviceContext, int>,
     ops::ElementwiseSubKernel<paddle::platform::CPUDeviceContext, int64_t>,
     ops::ElementwiseSubKernel<paddle::platform::CPUDeviceContext,
-                              paddle::platform::complex64>,
+                              paddle::platform::complex<float>>,
     ops::ElementwiseSubKernel<paddle::platform::CPUDeviceContext,
-                              paddle::platform::complex128>);
+                              paddle::platform::complex<double>>);
 REGISTER_OP_CPU_KERNEL(
     elementwise_sub_grad,
     ops::ElementwiseSubGradKernel<paddle::platform::CPUDeviceContext, float>,
@@ -139,9 +137,9 @@ REGISTER_OP_CPU_KERNEL(
     ops::ElementwiseSubGradKernel<paddle::platform::CPUDeviceContext, int>,
     ops::ElementwiseSubGradKernel<paddle::platform::CPUDeviceContext, int64_t>,
     ops::ElementwiseSubGradKernel<paddle::platform::CPUDeviceContext,
-                                  paddle::platform::complex64>,
+                                  paddle::platform::complex<float>>,
     ops::ElementwiseSubGradKernel<paddle::platform::CPUDeviceContext,
-                                  paddle::platform::complex128>);
+                                  paddle::platform::complex<double>>);
 REGISTER_OP_CPU_KERNEL(
     elementwise_sub_grad_grad,
     ops::ElementwiseSubDoubleGradKernel<paddle::platform::CPUDeviceContext,
@@ -153,9 +151,9 @@ REGISTER_OP_CPU_KERNEL(
     ops::ElementwiseSubDoubleGradKernel<paddle::platform::CPUDeviceContext,
                                         int64_t>,
     ops::ElementwiseSubDoubleGradKernel<paddle::platform::CPUDeviceContext,
-                                        paddle::platform::complex64>,
+                                        paddle::platform::complex<float>>,
     ops::ElementwiseSubDoubleGradKernel<paddle::platform::CPUDeviceContext,
-                                        paddle::platform::complex128>);
+                                        paddle::platform::complex<double>>);
 
 REGISTER_OP_VERSION(elementwise_sub)
     .AddCheckpoint(

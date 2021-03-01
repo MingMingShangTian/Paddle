@@ -43,7 +43,7 @@ class Optimization_ex1(paddle.nn.Layer):
             stop_gradient=False)
 
     def forward(self, mode=1):
-        jj = paddle.to_tensor(np.array([1j]).astype(np.complex64))
+        jj = paddle.to_tensor(np.array([1j]).astype(np.complex<float>))
         if mode == 1:
             # run all calc in one step
             loss = paddle.sum(self.A + (self.theta0 + self.theta1 * jj)) * (

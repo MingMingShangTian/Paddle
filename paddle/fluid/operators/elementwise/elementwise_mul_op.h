@@ -133,22 +133,23 @@ struct MulGradDX {
 };
 
 template <>
-struct MulGradDX<paddle::platform::complex64> {
-  HOSTDEVICE paddle::platform::complex64 operator()(
-      paddle::platform::complex64 x, paddle::platform::complex64 y,
-      paddle::platform::complex64 out, paddle::platform::complex64 dout) const {
-    paddle::platform::complex64 y_conj(y.real, -y.imag);
+struct MulGradDX<paddle::platform::complex<float>> {
+  HOSTDEVICE paddle::platform::complex<float> operator()(
+      paddle::platform::complex<float> x, paddle::platform::complex<float> y,
+      paddle::platform::complex<float> out,
+      paddle::platform::complex<float> dout) const {
+    paddle::platform::complex<float> y_conj(y.real, -y.imag);
     return dout * y_conj;
   }
 };
 
 template <>
-struct MulGradDX<paddle::platform::complex128> {
-  HOSTDEVICE paddle::platform::complex128 operator()(
-      paddle::platform::complex128 x, paddle::platform::complex128 y,
-      paddle::platform::complex128 out,
-      paddle::platform::complex128 dout) const {
-    paddle::platform::complex128 y_conj(y.real, -y.imag);
+struct MulGradDX<paddle::platform::complex<double>> {
+  HOSTDEVICE paddle::platform::complex<double> operator()(
+      paddle::platform::complex<double> x, paddle::platform::complex<double> y,
+      paddle::platform::complex<double> out,
+      paddle::platform::complex<double> dout) const {
+    paddle::platform::complex<double> y_conj(y.real, -y.imag);
     return dout * y_conj;
   }
 };
@@ -159,22 +160,23 @@ struct MulGradDY {
 };
 
 template <>
-struct MulGradDY<paddle::platform::complex64> {
-  HOSTDEVICE paddle::platform::complex64 operator()(
-      paddle::platform::complex64 x, paddle::platform::complex64 y,
-      paddle::platform::complex64 out, paddle::platform::complex64 dout) const {
-    paddle::platform::complex64 x_conj(x.real, -x.imag);
+struct MulGradDY<paddle::platform::complex<float>> {
+  HOSTDEVICE paddle::platform::complex<float> operator()(
+      paddle::platform::complex<float> x, paddle::platform::complex<float> y,
+      paddle::platform::complex<float> out,
+      paddle::platform::complex<float> dout) const {
+    paddle::platform::complex<float> x_conj(x.real, -x.imag);
     return dout * x_conj;
   }
 };
 
 template <>
-struct MulGradDY<paddle::platform::complex128> {
-  HOSTDEVICE paddle::platform::complex128 operator()(
-      paddle::platform::complex128 x, paddle::platform::complex128 y,
-      paddle::platform::complex128 out,
-      paddle::platform::complex128 dout) const {
-    paddle::platform::complex128 x_conj(x.real, -x.imag);
+struct MulGradDY<paddle::platform::complex<double>> {
+  HOSTDEVICE paddle::platform::complex<double> operator()(
+      paddle::platform::complex<double> x, paddle::platform::complex<double> y,
+      paddle::platform::complex<double> out,
+      paddle::platform::complex<double> dout) const {
+    paddle::platform::complex<double> x_conj(x.real, -x.imag);
     return dout * x_conj;
   }
 };
