@@ -18,6 +18,7 @@
 
 #include "paddle/fluid/framework/scope.h"
 #include "paddle/fluid/platform/place.h"
+#include "paddle/fluid/platform/complex.h"
 
 namespace paddle {
 namespace framework {
@@ -46,9 +47,14 @@ struct TensorCheckerVisitor {
   }
 
   template <typename T>
+  void apply(
+      typename std::enable_if<std::is_same<T, paddle::platform::complex<float>>::value || std::is_same<T, paddle::platform::complex<double>>::value >::type * = 0) const {
+    VLOG(10) << var_name_ << " need not to check, it's type is not float point";
+  }
+
+  template <typename T>
   void apply(typename std::enable_if<std::is_floating_point<T>::value>::type* =
                  0) const;
-
   std::string op_type_;
   std::string var_name_;
   const framework::Tensor& tensor_;
