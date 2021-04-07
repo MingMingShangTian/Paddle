@@ -544,9 +544,9 @@ template struct MergeAdd<platform::CPUDeviceContext, int64_t>;
 template struct MergeAdd<platform::CPUDeviceContext, float>;
 template struct MergeAdd<platform::CPUDeviceContext, double>;
 template struct MergeAdd<platform::CPUDeviceContext,
-                         paddle::platform::complex64>;
+                         paddle::platform::complex<float>>;
 template struct MergeAdd<platform::CPUDeviceContext,
-                         paddle::platform::complex128>;
+                         paddle::platform::complex<double>>;
 
 template struct MergeAverage<platform::CPUDeviceContext, int>;
 template struct MergeAverage<platform::CPUDeviceContext, int64_t>;

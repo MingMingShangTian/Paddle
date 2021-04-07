@@ -25,6 +25,7 @@
 #ifdef PADDLE_WITH_CUDA
 #include <cuComplex.h>
 #include <thrust/complex.h>
+#include <cuda.h>
 #endif  // PADDLE_WITH_CUDA
 
 #ifdef PADDLE_WITH_HIP
@@ -32,15 +33,22 @@
 #include <thrust/complex.h>  // NOLINT
 #endif
 
-#include <cstring>
+#if !defined(_WIN32)
+#define PADDLE_ALIGN(x) __attribute__((aligned(x)))
+#else
+#define PADDLE_ALIGN(x) __declspec(align(x))
+#endif
 
-#include "paddle/fluid/platform/hostdevice.h"
-#include "unsupported/Eigen/CXX11/Tensor"
+#if (defined(__CUDACC__) || defined(__HIPCC__))
+#define HOSTDEVICE __host__ __device__
+#define DEVICE __device__
+#define HOST __host__
+#else
+#define HOSTDEVICE
+#define DEVICE
+#define HOST
+#endif
 
-namespace Eigen {
-template <typename T>
-struct NumTraits;
-}  // namespace Eigen
 
 namespace paddle {
 namespace platform {
@@ -330,7 +338,7 @@ HOSTDEVICE inline bool operator>=(const complex<T>& a, const complex<T>& b) {
 template <typename T>
 HOSTDEVICE inline bool isnan(const complex<T>& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
-  return isnan(a.real) || isnan(a.imag);
+  return __isnan(a.real) || __isnan(a.imag);
 #else
   return std::isnan(a.real) || std::isnan(a.imag);
 #endif

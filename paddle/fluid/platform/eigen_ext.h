@@ -21,11 +21,14 @@
 #include "paddle/fluid/platform/hostdevice.h"
 
 #include "unsupported/Eigen/CXX11/Tensor"
+#include "paddle/fluid/platform/complex.h"
 
 namespace Eigen {
 
-using complex64 = paddle::platform::complex64;
-using complex128 = paddle::platform::complex128;
+//using complex64 = paddle::platform::complex64;
+//using complex128 = paddle::platform::complex128;
+//using complex64 = paddle::platform::complex<float>;
+//using complex128 = paddle::platform::complex<double>;
 using float16 = paddle::platform::float16;
 
 template <typename T>
@@ -62,7 +65,7 @@ struct NumTraits<paddle::platform::bfloat16>
 };
 
 template <>
-struct NumTraits<complex64> : GenericNumTraits<std::complex<float>> {
+struct NumTraits<paddle::platform::complex<float>> : GenericNumTraits<std::complex<float>> {
   typedef float Real;
   typedef typename NumTraits<float>::Literal Literal;
   enum {
@@ -84,7 +87,7 @@ struct NumTraits<complex64> : GenericNumTraits<std::complex<float>> {
 };
 
 template <>
-struct NumTraits<complex128> : GenericNumTraits<std::complex<double>> {
+struct NumTraits<paddle::platform::complex<double>> : GenericNumTraits<std::complex<double>> {
   typedef double Real;
   typedef typename NumTraits<double>::Literal Literal;
   enum {
@@ -225,134 +228,81 @@ HOSTDEVICE inline paddle::platform::bfloat16 maxi(
 }
 
 //////////// complex64 methods /////////////
-
 template <>
-HOSTDEVICE inline bool(isnan)(const complex64& a) {
+HOSTDEVICE inline bool(isnan)(const paddle::platform::complex<float> & a) {
   return (paddle::platform::isnan)(a);
 }
 
 template <>
-HOSTDEVICE inline bool(isinf)(const complex64& a) {
+HOSTDEVICE inline bool(isnan)(const paddle::platform::complex<double> & a) {
+  return (paddle::platform::isnan)(a);
+}
+
+template <>
+HOSTDEVICE inline bool(isinf)(const paddle::platform::complex<float>& a) {
   return (paddle::platform::isinf)(a);
 }
 
 template <>
-HOSTDEVICE inline bool(isfinite)(const complex64& a) {
+HOSTDEVICE inline bool(isinf)(const paddle::platform::complex<double>& a) {
+  return (paddle::platform::isinf)(a);
+}
+
+template <typename T>
+HOSTDEVICE inline bool(isfinite)(const paddle::platform::complex<T>& a) {
   return (paddle::platform::isfinite)(a);
 }
 
-template <>
-HOSTDEVICE inline complex64 exp(const complex64& a) {
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> exp(const paddle::platform::complex<T>& a) {
   float com = ::expf(a.real);
   float res_real = com * ::cosf(a.imag);
   float res_imag = com * ::sinf(a.imag);
-  return complex64(res_real, res_imag);
+  return paddle::platform::complex<T>(res_real, res_imag);
 }
 
-template <>
-HOSTDEVICE inline complex64 log(const complex64& a) {
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> log(const paddle::platform::complex<T>& a) {
   return paddle::platform::log(a);
 }
 
-template <>
-HOSTDEVICE inline complex64 tanh(const complex64& a) {
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> tanh(const paddle::platform::complex<T>& a) {
   return paddle::platform::tanh(a);
 }
 
-template <>
-HOSTDEVICE inline complex64 sqrt(const complex64& a) {
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> sqrt(const paddle::platform::complex<T>& a) {
   return paddle::platform::sqrt(a);
 }
 
-template <>
-HOSTDEVICE inline complex64 ceil(const complex64& a) {
-  return complex64(::ceilf(a.real), ::ceilf(a.imag));
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> ceil(const paddle::platform::complex<T>& a) {
+  return paddle::platform::complex<T>(::ceilf(a.real), ::ceilf(a.imag));
 }
 
-template <>
-HOSTDEVICE inline complex64 floor(const complex64& a) {
-  return complex64(::floorf(a.real), ::floor(a.imag));
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> floor(const paddle::platform::complex<T>& a) {
+  return paddle::platform::complex<T>(::floorf(a.real), ::floor(a.imag));
 }
 
-template <>
-HOSTDEVICE inline complex64 round(const complex64& a) {
-  return complex64(::roundf(a.real), ::roundf(a.imag));
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> round(const paddle::platform::complex<T>& a) {
+  return paddle::platform::complex<T>(::roundf(a.real), ::roundf(a.imag));
 }
 
-template <>
-HOSTDEVICE inline complex64 pow(const complex64& a, const complex64& b) {
+template <typename T>
+HOSTDEVICE inline paddle::platform::complex<T> pow(const paddle::platform::complex<T>& a, const paddle::platform::complex<T>& b) {
   return paddle::platform::pow(a, b);
 }
 
-template <>
-HOSTDEVICE inline float abs(const complex64& a) {
+template <typename T>
+HOSTDEVICE inline float abs(const paddle::platform::complex<T>& a) {
   return paddle::platform::abs(a);
 }
 
 //////////// complex128 methods /////////////
 
-template <>
-HOSTDEVICE inline bool(isnan)(const complex128& a) {
-  return (paddle::platform::isnan)(a);
-}
-
-template <>
-HOSTDEVICE inline bool(isinf)(const complex128& a) {
-  return (paddle::platform::isinf)(a);
-}
-
-template <>
-HOSTDEVICE inline bool(isfinite)(const complex128& a) {
-  return (paddle::platform::isfinite)(a);
-}
-
-template <>
-HOSTDEVICE inline complex128 exp(const complex128& a) {
-  double com = ::expf(a.real);
-  double res_real = com * ::cosf(a.imag);
-  double res_imag = com * ::sinf(a.imag);
-  return complex128(res_real, res_imag);
-}
-
-template <>
-HOSTDEVICE inline complex128 log(const complex128& a) {
-  return paddle::platform::log(a);
-}
-
-template <>
-HOSTDEVICE inline complex128 tanh(const complex128& a) {
-  return paddle::platform::tanh(a);
-}
-
-template <>
-HOSTDEVICE inline complex128 sqrt(const complex128& a) {
-  return paddle::platform::sqrt(a);
-}
-
-template <>
-HOSTDEVICE inline complex128 ceil(const complex128& a) {
-  return complex128(::ceilf(a.real), ::ceilf(a.imag));
-}
-
-template <>
-HOSTDEVICE inline complex128 floor(const complex128& a) {
-  return complex128(::floorf(a.real), ::floor(a.imag));
-}
-
-template <>
-HOSTDEVICE inline complex128 round(const complex128& a) {
-  return complex128(::roundf(a.real), ::roundf(a.imag));
-}
-
-template <>
-HOSTDEVICE inline complex128 pow(const complex128& a, const complex128& b) {
-  return paddle::platform::pow(a, b);
-}
-
-template <>
-HOSTDEVICE inline double abs(const complex128& a) {
-  return paddle::platform::abs(a);
-}
 
 //////////// float16 methods /////////////
 

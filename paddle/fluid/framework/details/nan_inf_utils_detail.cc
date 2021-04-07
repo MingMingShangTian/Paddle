@@ -159,10 +159,6 @@ static void PrintNanInf(const T* value, const size_t numel, int print_num,
 #pragma omp declare reduction(+ : paddle::platform::float16 : omp_out += omp_in)
 #pragma omp declare reduction(+ : paddle::platform::bfloat16 : omp_out += \
                               omp_in)
-#pragma omp declare reduction(+ : paddle::platform::complex64 : omp_out += \
-                              omp_in)
-#pragma omp declare reduction(+ : paddle::platform::complex128 : omp_out += \
-                              omp_in)
 #pragma omp declare reduction(+ : paddle::platform::complex<float> : omp_out += \
                               omp_in)
 #pragma omp declare reduction(+ : paddle::platform::complex<double> : omp_out += \
@@ -222,8 +218,8 @@ void CheckNanInf<paddle::platform::bfloat16>(
 }
 
 template <>
-void CheckNanInf<paddle::platform::complex64>(
-    const paddle::platform::complex64* value, const size_t numel, int print_num,
+void CheckNanInf<paddle::platform::complex<float>>(
+    const paddle::platform::complex<float>* value, const size_t numel, int print_num,
     const std::string& op_type, const std::string& var_name) {
   float real_sum = 0.0f;
 #pragma omp parallel for reduction(+ : real_sum)
@@ -248,8 +244,8 @@ void CheckNanInf<paddle::platform::complex64>(
 }
 
 template <>
-void CheckNanInf<paddle::platform::complex128>(
-    const paddle::platform::complex128* value, const size_t numel,
+void CheckNanInf<paddle::platform::complex<double>>(
+    const paddle::platform::complex<double>* value, const size_t numel,
     int print_num, const std::string& op_type, const std::string& var_name) {
   double real_sum = 0.0;
 #pragma omp parallel for reduction(+ : real_sum)

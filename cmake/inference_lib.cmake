@@ -193,6 +193,9 @@ copy(inference_lib_dist
         SRCS  ${PADDLE_SOURCE_DIR}/paddle/fluid/extension/include/*
         DSTS  ${PADDLE_INFERENCE_INSTALL_DIR}/paddle/include/experimental/)
 copy(inference_lib_dist
+        SRCS  ${PADDLE_SOURCE_DIR}/paddle/fluid/platform/complex.h
+        DSTS  ${PADDLE_INFERENCE_INSTALL_DIR}/paddle/include/experimental/)
+copy(inference_lib_dist
         SRCS  ${PADDLE_SOURCE_DIR}/paddle/fluid/platform/complex64.h
         DSTS  ${PADDLE_INFERENCE_INSTALL_DIR}/paddle/include/experimental/)
 copy(inference_lib_dist

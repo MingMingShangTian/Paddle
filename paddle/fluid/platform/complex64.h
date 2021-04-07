@@ -355,7 +355,7 @@ HOSTDEVICE inline bool operator>(const complex64& a, const complex64& b) {
 HOSTDEVICE inline bool operator>=(const complex64& a, const complex64& b) {
   return static_cast<float>(a.real) >= static_cast<float>(b.real);
 }
-
+/*
 HOSTDEVICE inline bool(isnan)(const complex64& a) {
 #if defined(__CUDA_ARCH__)
   // __isnanf not supported on HIP platform
@@ -373,10 +373,12 @@ HOSTDEVICE inline bool(isinf)(const complex64& a) {
   return std::isinf(a.real) || std::isinf(a.imag);
 #endif
 }
-
+*/
+/*
 HOSTDEVICE inline bool(isfinite)(const complex64& a) {
   return !((isnan)(a)) && !((isinf)(a));
 }
+*/
 
 HOSTDEVICE inline float(abs)(const complex64& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
@@ -452,9 +454,11 @@ struct is_unsigned<paddle::platform::complex64> {
   static const bool value = false;
 };
 
+/*
 inline bool isnan(const paddle::platform::complex64& a) {
   return paddle::platform::isnan(a);
 }
+*/
 
 inline bool isinf(const paddle::platform::complex64& a) {
   return paddle::platform::isinf(a);

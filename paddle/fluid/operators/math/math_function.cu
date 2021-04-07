@@ -29,8 +29,8 @@ namespace math {
 
 using float16 = paddle::platform::float16;
 using bfloat16 = paddle::platform::bfloat16;
-using complex64 = paddle::platform::complex64;
-using complex128 = paddle::platform::complex128;
+using complex64 = paddle::platform::complex<float>;
+using complex128 = paddle::platform::complex<double>;
 
 template struct SetConstant<platform::CUDADeviceContext, platform::float16>;
 template struct SetConstant<platform::CUDADeviceContext, float>;
@@ -39,8 +39,8 @@ template struct SetConstant<platform::CUDADeviceContext, uint8_t>;
 template struct SetConstant<platform::CUDADeviceContext, int>;
 template struct SetConstant<platform::CUDADeviceContext, int64_t>;
 template struct SetConstant<platform::CUDADeviceContext, bool>;
-template struct SetConstant<platform::CUDADeviceContext, platform::complex64>;
-template struct SetConstant<platform::CUDADeviceContext, platform::complex128>;
+template struct SetConstant<platform::CUDADeviceContext, platform::complex<float>>;
+template struct SetConstant<platform::CUDADeviceContext, platform::complex<double>>;
 
 #define DEFINE_GPU_TRANS(RANK)                                             \
   template struct Transpose<platform::CUDADeviceContext, float, RANK>;     \
