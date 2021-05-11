@@ -347,7 +347,7 @@ HOSTDEVICE inline bool isnan(const complex<T>& a) {
 template <typename T>
 HOSTDEVICE inline bool isinf(const complex<T>& a) {
 #if defined(__CUDA_ARCH__) || defined(__HIPCC__)
-  return isinf(a.real) || isinf(a.imag);
+  return __isinff(a.real) || __isinff(a.imag);
 #else
   return std::isinf(a.real) || std::isinf(a.imag);
 #endif

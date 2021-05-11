@@ -163,6 +163,10 @@ static void PrintNanInf(const T* value, const size_t numel, int print_num,
                               omp_in)
 #pragma omp declare reduction(+ : paddle::platform::complex<double> : omp_out += \
                               omp_in)
+#pragma omp declare reduction(+ : paddle::platform::complex64 : omp_out += \
+                              omp_in)
+#pragma omp declare reduction(+ : paddle::platform::complex128 : omp_out += \
+                              omp_in)
 #endif
 
 template <typename T>

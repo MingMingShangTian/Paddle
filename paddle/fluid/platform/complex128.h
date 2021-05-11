@@ -364,7 +364,6 @@ HOSTDEVICE inline bool operator>(const complex128& a, const complex128& b) {
 HOSTDEVICE inline bool operator>=(const complex128& a, const complex128& b) {
   return static_cast<double>(a.real) >= static_cast<double>(b.real);
 }
-/*
 HOSTDEVICE inline bool(isnan)(const complex128& a) {
 #if defined(PADDLE_WITH_CUDA) && defined(__CUDA_ARCH__)
   // __isnanf not supported on HIP platform
@@ -373,7 +372,7 @@ HOSTDEVICE inline bool(isnan)(const complex128& a) {
   return std::isnan(a.real) || std::isnan(a.imag);
 #endif
 }
-*/
+
 
 HOSTDEVICE inline bool(isinf)(const complex128& a) {
 #if defined(PADDLE_WITH_CUDA) && defined(__CUDA_ARCH__)
@@ -384,11 +383,9 @@ HOSTDEVICE inline bool(isinf)(const complex128& a) {
 #endif
 }
 
-/*
 HOSTDEVICE inline bool(isfinite)(const complex128& a) {
   return !((isnan)(a)) && !((isinf)(a));
 }
-*/
 
 HOSTDEVICE inline double(abs)(const complex128& a) {
 #if defined(PADDLE_WITH_CUDA_OR_HIP_COMPLEX128) && \
@@ -470,7 +467,6 @@ struct is_unsigned<paddle::platform::complex128> {
   static const bool value = false;
 };
 
-/*
 inline bool isnan(const paddle::platform::complex128& a) {
   return paddle::platform::isnan(a);
 }
@@ -479,7 +475,6 @@ inline bool isinf(const paddle::platform::complex128& a) {
   return paddle::platform::isinf(a);
 }
 
-*/
 template <>
 struct numeric_limits<paddle::platform::complex128> {
   static const bool is_specialized = false;
