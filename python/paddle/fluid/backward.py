@@ -2007,3 +2007,22 @@ def gradients(targets, inputs, target_gradients=None, no_grad_set=None):
 
     outs = calc_gradient(targets, inputs, target_gradients, no_grad_set)
     return _as_list(outs)
+
+
+@framework.static_only
+def gradients_with_optimizer(program, optimizer):
+    """
+    :api_attr: Static Graph
+
+    Backpropagate the gradients of the program with the given optimizer.
+
+    Args:
+        program (Program): The input program.
+        optimizer(Optimizer): The given optimizer.
+
+    Return:
+
+    Examples:
+        .. code-block:: python
+    """
+    pass
